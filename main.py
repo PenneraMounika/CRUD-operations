@@ -54,14 +54,30 @@ def update_teacher_doj(new_data, tr_id):
 
 def display_student_row_to_delete(row_selection):
     query="SELECT * FROM STUDENT WHERE id=?;"
+    count_row=0
     for row in cur.execute(query,(row_selection,)):
         print(row)
-    else:
+        count_row+=1
+    if count_row==0:
         print("Row does not exist.")
         return False
 
 def delete_student_row(row_selection):
     query="DELETE FROM STUDENT WHERE id=?"
+    cur.execute(query,(row_selection,))
+
+def display_teacher_row_to_delete(row_selection):
+    query="SELECT * FROM TEACHER WHERE employee_id=?;"
+    count_row=0
+    for row in cur.execute(query,(row_selection,)):
+        print(row)
+        count_row+=1
+    if count_row==0:
+        print("Row does not exist.")
+        return False
+
+def delete_teacher_row(row_selection):
+    query="DELETE FROM TEACHER WHERE employee_id=?"
     cur.execute(query,(row_selection,))
 
 user_input = int(
@@ -101,6 +117,7 @@ while user_input <= 4 and user_input > 0:
                     print(row)
                 print("Student table displayed successfully.\n")
         elif table_input == 2:
+            count=0
             query = "SELECT * FROM teacher;"
             for row in cur.execute(query):
                 count += 1
@@ -171,6 +188,23 @@ while user_input <= 4 and user_input > 0:
                     confirm_user_input=input("Confirm deletion of the row selected above:")
                     if confirm_user_input=="yes":
                         delete_student_row(row_selection)
+                        print("Selected row deleted successfully")
+                    else:
+                        print("Deletion cancelled")
+                        pass
+        elif table_input==2:
+            query = "SELECT * FROM TEACHER;"
+            for row in cur.execute(query):
+                count += 1
+            if count == 0:
+                print("No rows to delete in teacher table.")
+            else:
+                row_selection=int(input("Enter the employee_id to remove that row from the table:"))
+                row_existence=display_teacher_row_to_delete(row_selection)
+                if row_existence!=False:
+                    confirm_user_input=input("Confirm deletion of the row selected above:")
+                    if confirm_user_input=="yes":
+                        delete_teacher_row(row_selection)
                         print("Selected row deleted successfully")
                     else:
                         print("Deletion cancelled")
